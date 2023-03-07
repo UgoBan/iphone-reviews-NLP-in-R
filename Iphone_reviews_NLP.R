@@ -47,6 +47,14 @@ df = subset(df, select = -c(index))
 
 df <- df %>% distinct()
 
+df$review_rating[df$review_rating == "1.0 out of 5 stars"] <- "1 star"
+df$review_rating[df$review_rating == "2.0 out of 5 stars"] <- "2 stars"
+df$review_rating[df$review_rating == "3.0 out of 5 stars"] <- "3 stars"
+df$review_rating[df$review_rating == "4.0 out of 5 stars"] <- "4 stars"
+df$review_rating[df$review_rating == "5.0 out of 5 stars"] <- "5 stars"
+
+unique(df$review_rating)
+
 # exporting data for use in Tableau
 write.csv(df, "iphone_reviews_tableau.csv")
 
@@ -107,11 +115,10 @@ classifier = randomForest(x = training_set[-743],
                           ntree = 10)
 
 # Predicting the Test set results
-y_pred = predict(classifier, newdata = test_set[-743])
+confusion_matrix = predict(classifier, newdata = test_set[-743])
 
 # Making the Confusion Matrix
-cm = table(test_set[, 743], y_pred)
-confusion_matrix <- cm
-confusion_matrix
+cm = table(test_set[, 743], confusion_matrix)
+cm
 
 # The model has an accuracy of approximately 75.8%
